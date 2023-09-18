@@ -39,6 +39,7 @@ const Input:React.FC<InputProps> = ({
                     font-light
                     bg-white
                     rounded-md
+                    border-2
                     outline-none
                     transition
                     disabled: opacity-70
@@ -59,12 +60,13 @@ const Input:React.FC<InputProps> = ({
                     z-10
                     origin-[0]
                     ${formatPrice ? 'left-9' : 'left-4'}
-                    peer-placeholder-shown: scale-100
-                    peer-placeholder-shown: translate-y-0
+                    peer-placeholder-shown:scale-100
+                    peer-placeholder-shown:translate-y-0
                     peer-focus:scale-75
                     peer-focus:-translate-y-4
                     ${errors[id] ? 'text-rose-500' : 'text-zinc-400'}
                 `}
+                
             >
                 {label}
             </label>
