@@ -1,3 +1,5 @@
+'use client'
+
 import { CldUploadWidget } from 'next-cloudinary';
 import { TbPhotoPlus } from 'react-icons/tb';
 import React from 'react';
@@ -14,22 +16,26 @@ const ImageUpload = ({
 }: ImageUploadProps) => {
     
     const handleUpload = (result: any) => {
-        console.log('result', result);
+        // console.log('result', result);
         onChange(result.info.secure_url);
         
     }
+
+    const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+
     return (
         <CldUploadWidget
             onUpload={handleUpload}
-            uploadPreset={'dsadasd'}
+            uploadPreset={uploadPreset}
             options={{
                 maxFiles: 1
             }}
         >
-            {({open}) => {
+            {({ open }) => {
                 return (
                     <div 
                         onClick={() => open?.()}
+                        
                         className='relative flex flex-col items-center justify-center gap-4 p-20 transition border-2 border-dashed cursor-pointer hover:opacity-70 border-neutral-300 text-neutral-300'
                     >
                         <TbPhotoPlus size={50} />

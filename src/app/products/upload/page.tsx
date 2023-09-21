@@ -5,10 +5,17 @@ import Container from '@/components/Container';
 import Heading from '@/components/Heading';
 import ImageUpload from '@/components/ImageUpload';
 import Input from '@/components/Input'
+import KakaoMap from '@/components/KakaoMap';
+import { categories } from '@/components/categories/Categories';
+import CategoryInput from '@/components/categories/CategoryInput';
+import axios from 'axios';
+import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 const ProductUploadPage = () => {
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
 
     const { 
@@ -33,12 +40,35 @@ const ProductUploadPage = () => {
     })
 
     const imageSrc = watch('imageSrc');
+    const category = watch('category');
+    const latitude = watch('latitude');
+    const longitude = watch('longitude');
+
+    const KakaoMap = dynamic(() => import('../../../components/KakaoMap'),{
+        ssr: false
+    })
 
     // data에는 react-hook-form에서 쓰인 값들이 포함
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
 
+        setIsLoading(true);
+
+        axios.post('/api/products', data)
+            .then(response => {
+                router.push(`/products/${response.data.id}`)
+            })
+            .catch((e) => {
+                console.log(e);
+                
+            })
+            .finally(() => {
+                setIsLoading(false);
+            })
+
     }
 
+    // react-hook-form register 등록되지 않은 속성 category, imageSrc를 변수화하여 업데이트 잡기 !
+    // 걍 input 창 없으면 다 setCustomValue로 포인터 설정해버렷
     const setCustomValue = (id: string, value: any) => {
         setValue(id, value);
     }
@@ -97,10 +127,21 @@ const ProductUploadPage = () => {
                         overflow-y-auto 
                         '
                     >
-                        {/* { Category } */}
+                        {categories.map(item => (
+                            <div key={item.label} className='col-span-1'>
+                                <CategoryInput 
+                                    onClick={(category) => setCustomValue('category', category)}
+                                    selected={category === item.path} 
+                                    label={item.label}
+                                    icon={item.icon}
+                                    path={item.path}
+                                />
+                            </div>
+                        ))}
                     </div>
                     <hr />
-                    {/* { kakaoMap } */}
+
+                    <KakaoMap setCustomValue={setCustomValue} latitude={latitude} longitude={longitude}/>
 
                     <Button label='상품 생성하기'/>
                 </form>

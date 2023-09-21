@@ -3,6 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import getCurrentUser from './actions/getCurrentUser'
+import Script from 'next/script'
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -24,6 +25,10 @@ export default async function RootLayout({
       <body className={inter.className}>
         <NavBar currentUser={currentUser}/>
         {children}
+        <Script 
+          // &autoload=false 집어넣어야지 보이더라구 2번째로 볼 때 더 톺아보자
+          src="//dapi.kakao.com/v2/maps/sdk.js?appkey=8382464e8a99442effa2bd976f42f94e&libraries=services,clusterer&autoload=false"
+        />
       </body>
     </html>
   )
