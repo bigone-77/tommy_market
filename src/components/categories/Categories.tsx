@@ -1,8 +1,12 @@
+'use client'
+
 import React from 'react'
 import { TbBeach, TbMountain, TbPool } from 'react-icons/tb'
 import { GiBoatFishing, GiIsland, GiWindmill } from 'react-icons/gi'
 import { MdOutlineVilla } from 'react-icons/md'
 import { FaSkiing } from 'react-icons/fa'
+import { useSearchParams } from 'next/navigation'
+import CategoryBox from './CategoryBox'
 
 export const categories = [
     {
@@ -55,3 +59,25 @@ export const categories = [
     }
 ]
 
+function Categories () {
+    const params = useSearchParams();
+    const category = params?.get('category');
+    
+    return (
+        <div
+            className='flex items-center justify-between pt-4 overflow-x-auto'
+        >
+            {categories.map((item) => (
+                <CategoryBox 
+                    key={item.label}
+                    label={item.label}
+                    path={item.path}
+                    icon={item.icon}
+                    selected={category === item.path}
+                />
+            ))}
+        </div>
+    )
+}
+
+export default Categories;
