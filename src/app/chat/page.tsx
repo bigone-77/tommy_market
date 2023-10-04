@@ -4,7 +4,7 @@ import ChatClient from './ChatClient';
 
 const ChatPage = async () => {
 
-    const currentUser = getCurrentUser();
+    const currentUser = await getCurrentUser();
 
     return (
         <ChatClient 
