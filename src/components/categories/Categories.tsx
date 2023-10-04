@@ -61,6 +61,7 @@ export const categories = [
 
 function Categories () {
     const params = useSearchParams();
+    
     const category = params?.get('category');
     
     return (
