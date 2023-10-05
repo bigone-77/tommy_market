@@ -31,3 +31,87 @@ export async function GET(
     })
     return NextResponse.json(users);
 }
+
+export async function POST (
+    request: Request
+){
+    const currentUser = await getCurrentUser();
+
+    if (!currentUser) {
+        return NextResponse.error();
+    }
+
+    const body = await request.json();
+
+    const conversation = await prisma.conversation.findFirst({
+        where: {
+            AND: [
+                {
+                    users: {
+                        some: {
+                            id: body.senderId
+                        }
+                    }
+                },
+                {
+                    users: {
+                        some: {
+                            id: body.receiverId
+                        }
+                    }
+                }
+            ]
+        }
+    })
+
+    if (conversation) {
+        // 이미 receiver와 sender가 대화를 나눈 conversation이 있다면 메시지만 생성하기
+        try {
+            const message = await prisma.message.create({
+                data: {
+                    text: body.text,
+                    image: body.image,
+                    senderId: body.senderId,
+                    receiverId: body.receiverId,
+                    conversationId: conversation.id
+                }
+            })
+            return NextResponse.json(message);
+        }   catch (error) {
+            return NextResponse.json(error);
+        }
+    }   else {
+        // 둘이 처음 대화하는거라면 conversation과 message 둘 다 생성하기
+        const newConversation = await prisma.conversation.create({
+            data: {
+                senderId: body.senderId,
+                receiverId: body.receiverId,
+                users: {
+                    connect: [
+                        {
+                            id: body.senderId
+                        },
+                        {
+                            id: body.receiverId
+                        }
+                    ]
+                }
+            }
+        })
+        try {
+            const message = await prisma.message.create({
+                data: {
+                    text: body.text,
+                    image: body.image,
+                    senderId: body.senderId,
+                    receiverId: body.receiverId,
+                    conversationId: newConversation.id
+                }
+            })
+            return NextResponse.json(message);
+        }   catch (error) {
+            return NextResponse.json(error);
+        }
+    }
+
+}

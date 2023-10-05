@@ -20,15 +20,15 @@ const Input = ({
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const imgUrl = '';
+        const imageUrl = '';
 
-        if (message || imgUrl) {
+        if (message || imageUrl) {
             try {
                 console.log(message);
                 
                 axios.post('api/chat', {
                     text: message,
-                    image: imgUrl,
+                    image: imageUrl,
                     receiverId: receiverId,
                     senderId: currentUserId
                 });
